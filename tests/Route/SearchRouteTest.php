@@ -30,6 +30,26 @@ use CanIHaveSomeCoffee\TheTVDbAPI\Route\SearchRoute;
  */
 class SearchRouteTest extends BaseRouteTest
 {
+    public function testNameIsAValidSearchIdentifier() {
+        static::assertTrue(SearchRoute::isValidSearchIdentifier(SearchRoute::SEARCH_NAME));
+    }
+
+    public function testIMDBIsAValidSearchIdentifier() {
+        static::assertTrue(SearchRoute::isValidSearchIdentifier(SearchRoute::SEARCH_IMDB));
+    }
+
+    public function testZapToITIsAValidSearchIdentifier() {
+        static::assertTrue(SearchRoute::isValidSearchIdentifier(SearchRoute::SEARCH_ZAP2IT));
+    }
+
+    public function testSlugIsAValidSearchIdentifier() {
+        static::assertTrue(SearchRoute::isValidSearchIdentifier(SearchRoute::SEARCH_SLUG));
+    }
+
+    public function testFooIsNotAValidSearchIdentifier() {
+        static::assertFalse(SearchRoute::isValidSearchIdentifier("foo"));
+    }
+
     public function testSearchInvalidSpecifier()
     {
         $instance = new SearchRoute($this->parent);
@@ -94,6 +114,20 @@ class SearchRouteTest extends BaseRouteTest
         $this->setMockData($return, $options);
         $instance = new SearchRoute($this->parent);
         $results = $instance->searchByZap2ItId($name);
+        static::assertContainsOnlyInstancesOf(BasicSeries::class, $results);
+    }
+
+    public function testSearchBySlug()
+    {
+        $name = 'foo_slug_bar';
+        $return = [
+            ['id' => 1, 'seriesName' => 'foo'],
+            ['id' => 3, 'seriesName' => 'foo bar']
+        ];
+        $options = ['query' => [SearchRoute::SEARCH_SLUG => $name]];
+        $this->setMockData($return, $options);
+        $instance = new SearchRoute($this->parent);
+        $results = $instance->searchBySlug($name);
         static::assertContainsOnlyInstancesOf(BasicSeries::class, $results);
     }
 }

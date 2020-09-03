@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2017, Willem Van Iseghem (canihavesomecoffee) <theTVDbAPI@canihavesome.coffee>
+ * Copyright (c) 2020, Willem Van Iseghem (canihavesomecoffee) <theTVDbAPI@canihavesome.coffee>
  *
  * Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby
  * granted, provided that the above copyright notice and this permission notice appear in all copies.
@@ -36,19 +36,56 @@ $theTVDbAPI->setAcceptedLanguages(['nl', 'en']);
 $token = $theTVDbAPI->authentication()->login($accessKey);
 $theTVDbAPI->setToken($token);
 
-// Retrieve an episode from a Dutch show.
-$episode = $theTVDbAPI->episodes()->byId(6347388);
-var_dump($episode);
+// Retrieve artwork statistics from a Dutch show.
+$artworkStatistics = $theTVDbAPI->series()->getImages(280258);
+var_dump($artworkStatistics);
 
 /*
     This will yield something like:
-    class CanIHaveSomeCoffee\TheTVDbAPI\Model\Episode#41 (30) {
-      ... snipped for brevity ...
-      public $episodeName =>
-      string(13) "Imke Courtois"
-      public $overview =>
+    class CanIHaveSomeCoffee\TheTVDbAPI\Model\ImageStatistics#41 (5) {
+      public $fanart =>
+      int(1)
+      public $poster =>
+      int(3)
+      public $season =>
       NULL
-      ... snipped for brevity ...
+      public $seasonwide =>
+      NULL
+      public $series =>
+      NULL
     }
-    English only would yield twice NULL.
+*/
+
+// Retrieve banners from a Dutch show.
+$artwork = $theTVDbAPI->series()->getImagesWithQuery(280258, ["keyType" => "poster"]);
+var_dump($artwork);
+
+/*
+    This will yield something similar to:
+    array(3) {
+      [0] =>
+      class CanIHaveSomeCoffee\TheTVDbAPI\Model\Image#73 (8) {
+        public $fileName =>
+        string(20) "posters/280258-1.jpg"
+        public $id =>
+        int(1191168)
+        public $keyType =>
+        string(6) "poster"
+        public $languageId =>
+        int(0)
+        public $ratingsInfo =>
+        class CanIHaveSomeCoffee\TheTVDbAPI\Model\RatingsInfo#120 (2) {
+          public $average =>
+          int(0)
+          public $count =>
+          int(0)
+        }
+        public $resolution =>
+        string(8) "680x1000"
+        public $subKey =>
+        string(9) "graphical"
+        public $thumbnail =>
+        string(22) "posters/280258-1_t.jpg"
+      }
+      [1] =>
 */
